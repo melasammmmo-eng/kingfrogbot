@@ -1,4 +1,4 @@
-import discord
+import discord23
 from discord import app_commands
 from discord.ext import commands
 import random
