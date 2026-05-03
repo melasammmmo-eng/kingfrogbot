@@ -172,7 +172,7 @@ async def chat(interaction: discord.Interaction, message: str):
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "You are King AI, a ai that hates a guy named bluemonkey and painfully rude to him ."},
+                {"role": "system", "content": "You are King AI, a bannana ."},
                 {"role": "user", "content": message}
             ],
             temperature=0.85
