@@ -296,7 +296,7 @@ async def stop(interaction: discord.Interaction):
         await interaction.response.send_message("I'm not in a voice channel")
 
 
-@tree.command(name="pingusers", description="Ping specific users (max 50)")
+@tree.command(name="say", description="say stuff and ping everyone")
 @app_commands.describe(users="Mention the users you want to ping (separated by space)")
 async def pingusers(interaction: discord.Interaction, users: str):
     if not await is_whitelisted(interaction):
@@ -313,10 +313,6 @@ async def pingusers(interaction: discord.Interaction, users: str):
     if len(user_mentions) > 50:
         await interaction.response.send_message("You can only ping up to **50 users** at once.", ephemeral=True)
         return
-
-    # Build the ping message
-    ping_message = " ".join(user_mentions)
-    await interaction.response.send_message(f"{ping_message}\nRequested by a sigma chud")
 # ================== FUN COMMANDS ==================
 
 @tree.command(name="joke", description="Random joke")
