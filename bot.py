@@ -316,7 +316,7 @@ async def pingusers(interaction: discord.Interaction, users: str):
 
     # Build the ping message
     ping_message = " ".join(user_mentions)
-    await interaction.response.send_message(f"{ping_message}\nRequested by {interaction.user.mention}")
+    await interaction.response.send_message(f"{ping_message}\nRequested by a sigma chud")
 # ================== FUN COMMANDS ==================
 
 @tree.command(name="joke", description="Random joke")
