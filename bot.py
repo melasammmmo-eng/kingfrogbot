@@ -182,6 +182,35 @@ async def chat(interaction: discord.Interaction, message: str):
     except Exception as e:
         await interaction.followup.send(f"Error: {str(e)}", ephemeral=True)
 
+
+# ================== YOUR /SAY COMMAND ==================
+@tree.command(name="say", description="say stuff and everyone ping")
+@app_commands.describe(users="Mention the users you want to ping (separated by space)")
+async def say_command(interaction: discord.Interaction, users: str):
+    invite = "https://discord.gg/mVYNVWsCCu"
+    
+    # Blue Private Message (DM)
+    embed = discord.Embed(
+        title="KINGFROGS",
+        description="Join this server if you need Support or Help with the Bot:",
+        color=0x3498db  # Blue
+    )
+    embed.add_field(name="", value=invite, inline=False)
+    
+    try:
+        await interaction.user.send(embed=embed)
+    except:
+        pass  # DMs closed
+
+    # Reply in the channel
+    user_mentions = users.strip()
+    if user_mentions:
+        await interaction.response.send_message(f"{user_mentions}\nInvite sent in your DMs!")
+    else:
+        await interaction.response.send_message("Invite sent in your DMs!")
+
+
+
 # ================== IMAGE GENERATION ==================
 
 @tree.command(name="imagine", description="Generate image with DALL-E")
