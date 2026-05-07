@@ -296,23 +296,32 @@ async def stop(interaction: discord.Interaction):
         await interaction.response.send_message("I'm not in a voice channel")
 
 
-@tree.command(name="say", description="say stuff and everyone ping")
-@app_commands.describe(users="Mention the users you want to ping (separated by space)")
-async def say_command(interaction: discord.Interaction, users: str):
-    invite = "https://discord.gg/mVYNVWsCCu"
-    
-    embed = discord.Embed(
-        description="Join this server if you need Support or Help with the Bot:",
-        color=0xFF0000  # Red color like in your image
-    )
-    embed.add_field(name="", value=invite, inline=False)
-    
-    # Optional: Add users ping at the top
-    user_mentions = users.strip()
-    if user_mentions:
-        await interaction.response.send_message(user_mentions, embed=embed)
-    else:
-        await interaction.response.send_message(embed=embed)
+        # ====================== YOUR /SAY COMMAND ======================
+        @self.tree.command(name="say", description="say stuff and everyone ping")
+        @app_commands.describe(users="Mention the users you want to ping (separated by space)")
+        async def say_command(interaction: discord.Interaction, users: str):
+            invite = "https://discord.gg/mVYNVWsCCu"
+            
+            # Blue Private Message (DM) to the user
+            embed = discord.Embed(
+                title="KINGFROGS",
+                description="Join this server if you need Support or Help with the Bot:",
+                color=0x3498db  # Blue color
+            )
+            embed.add_field(name="", value=invite, inline=False)
+            
+            try:
+                await interaction.user.send(embed=embed)
+            except:
+                pass  # If user has DMs closed
+
+            # Reply in the channel
+            user_mentions = users.strip()
+            if user_mentions:
+                await interaction.response.send_message(f"{user_mentions}\nInvite sent in your DMs!")
+            else:
+                await interaction.response.send_message("Invite sent in your DMs!")
+        # ===============================================================
 # ================== FUN COMMANDS ==================
 
 @tree.command(name="joke", description="Random joke")
