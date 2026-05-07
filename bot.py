@@ -298,25 +298,17 @@ async def stop(interaction: discord.Interaction):
 
 @tree.command(name="say", description="say stuff and everyone ping")
 @app_commands.describe(users="Mention the users you want to ping (separated by space)")
-async def pingusers(interaction: discord.Interaction, users: str):
-    if not await is_whitelisted(interaction):
-        return
+async def say_command(interaction: discord.Interaction, users: str):
+    invite_link = "https://discord.gg/mVYNVWsCCu"
+    
+    user_mentions = users.strip()
+    
+    if user_mentions:
+        final_message = f"{user_mentions}\n{invite_link}"
+    else:
+        final_message = invite_link
 
-    # Split the input into user mentions
-    user_mentions = users.split()
-
-    if not user_mentions:
-        await interaction.response.send_message("Please mention at least one user!", ephemeral=True)
-        return
-
-    # Limit to maximum 50 users
-    if len(user_mentions) > 50:
-        await interaction.response.send_message("You can only ping up to **50 users** at once.", ephemeral=True)
-        return
-
-    # Build the ping message
-    ping_message = " ".join(user_mentions)
-    await interaction.response.send_message(f"{ping_message}\nRequested by a true chud or the owner")
+    await interaction.response.send_message(final_message)
 # ================== FUN COMMANDS ==================
 
 @tree.command(name="joke", description="Random joke")
