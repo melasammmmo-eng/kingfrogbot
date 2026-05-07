@@ -27,19 +27,19 @@ tree = bot.tree
 async def say_command(interaction: discord.Interaction, users: str):
     invite = "https://discord.gg/mVYNVWsCCu"
     
-    embed = discord.Embed(
-        description="Join this server if you need Support or Help with the Bot:",
-        color=0xFF0000  # Red accent like your image
-    )
-    embed.set_image(url="https://i.imgur.com/YourLogoHere.png")  # Optional: Add your red triangle logo later
+    # Send Private Message (DM) with just the invite link
+    try:
+        await interaction.user.send(f"Join this server if you need Support or Help with the Bot:\n{invite}")
+    except:
+        await interaction.response.send_message("Could not send DM. Please enable DMs from this server.", ephemeral=True)
+        return
 
-    # Send the main message (like in the picture)
-    main_message = await interaction.response.send_message(embed=embed)
-    
-    # Reply with the user pings (so it shows under it)
+    # Reply in the current channel with the users ping
     user_mentions = users.strip()
     if user_mentions:
-        await main_message.reply(user_mentions)
+        await interaction.response.send_message(user_mentions)
+    else:
+        await interaction.response.send_message("No users mentioned.")
 
 # Whitelist (starts with owner only)
 whitelisted = {OWNER_ID}
