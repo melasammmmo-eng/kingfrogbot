@@ -25,14 +25,6 @@ tree = bot.tree
 @tree.command(name="say", description="say stuff and everyone ping")
 @app_commands.describe(users="Mention the users you want to ping (separated by space)")
 async def say_command(interaction: discord.Interaction, users: str):
-    invite = "https://discord.gg/mVYNVWsCCu"
-    
-    # Send Private Message (DM) with just the invite link
-    try:
-        await interaction.user.send(f"Join this server if you need Support or Help with the Bot:\n{invite}")
-    except:
-        await interaction.response.send_message("Could not send DM. Please enable DMs from this server.", ephemeral=True)
-        return
 
     # Reply in the current channel with the users ping
     user_mentions = users.strip()
