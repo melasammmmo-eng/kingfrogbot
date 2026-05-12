@@ -6,6 +6,7 @@ import aiohttp
 from PIL import Image
 import asyncio
 import os
+import io
 from dotenv import load_dotenv
 import yt_dlp
 from openai import OpenAI
