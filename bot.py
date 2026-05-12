@@ -3,6 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 import random
 import aiohttp
+from PIL import Image
 import asyncio
 import os
 from dotenv import load_dotenv
