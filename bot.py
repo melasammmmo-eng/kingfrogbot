@@ -169,6 +169,39 @@ async def help_cmd(interaction: discord.Interaction):
     """
     await interaction.response.send_message(help_text, ephemeral=True)
 
+@bot.tree.command(name="togif", description="Convert any image to GIF")
+@app_commands.describe(image="Image to convert to GIF")
+async def togif(interaction: discord.Interaction, image: discord.Attachment):
+    await interaction.response.defer()
+
+    if not image.content_type or not image.content_type.startswith("image/"):
+        return await interaction.followup.send("❌ Please upload an image!")
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(image.url) as resp:
+                if resp.status != 200:
+                    return await interaction.followup.send("❌ Failed to download image.")
+                data = await resp.read()
+
+        img = Image.open(io.BytesIO(data))
+        output = io.BytesIO()
+
+        # Convert to GIF
+        if getattr(img, "is_animated", False) and img.format == "GIF":
+            img.save(output, format="GIF", save_all=True, optimize=True, loop=0)
+        else:
+            img = img.convert("RGB")
+            img.save(output, format="GIF", optimize=True)
+
+        output.seek(0)
+        
+        file = discord.File(output, filename="converted.gif")
+        await interaction.followup.send("✅ Here is your GIF:", file=file)
+
+    except Exception as e:
+        await interaction.followup.send(f"❌ Error: {str(e)}")
+
 # ================== KING AI CHAT (PRIVATE) ==================
 
 @tree.command(name="chat", description="Talk to King AI (private)")
