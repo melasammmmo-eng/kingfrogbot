@@ -282,7 +282,7 @@ async def weather(interaction: discord.Interaction, city: str):
 
 
 
-@tree.command(name="raidscan", description="Scan recent messages for raid activity")
+@tree.command(name="readyscan", description="Scan recent messages for raid activity")
 async def readyscan(interaction: discord.Interaction):
     if not await is_whitelisted(interaction):
         return
@@ -290,10 +290,12 @@ async def readyscan(interaction: discord.Interaction):
     await interaction.response.defer(ephemeral=True)
 
     try:
-        messages = await interaction.channel.history(limit=100).flatten()
-        
+        messages = []
+        async for msg in interaction.channel.history(limit=100):
+            messages.append(msg)
+
         everyone_pings = 0
-        rapid_messages = {}
+        user_message_count = {}
         suspicious_users = set()
 
         for msg in messages:
@@ -301,21 +303,18 @@ async def readyscan(interaction: discord.Interaction):
                 everyone_pings += 1
                 suspicious_users.add(msg.author)
 
-            # Count messages per user
-            if msg.author.id not in rapid_messages:
-                rapid_messages[msg.author.id] = 0
-            rapid_messages[msg.author.id] += 1
+            user_message_count[msg.author.id] = user_message_count.get(msg.author.id, 0) + 1
 
-        # Find users who sent many messages quickly
-        spammers = [user for user, count in rapid_messages.items() if count >= 8]
+        # Find potential spammers
+        spammers = [user_id for user_id, count in user_message_count.items() if count >= 8]
 
-        embed = discord.Embed(title="Scan Report", color=discord.Color.orange())
-        embed.add_field(name="Total Messages Scanned", value="100", inline=False)
+        embed = discord.Embed(title="🔍 Ready Scan Report", color=discord.Color.orange())
+        embed.add_field(name="Messages Scanned", value="100", inline=False)
         embed.add_field(name="@everyone Pings", value=everyone_pings, inline=False)
         
         if spammers:
-            embed.add_field(name="Potential Spammers", value=len(spammers), inline=False)
-            embed.add_field(name="Warning", value="High activity detected. Possible raid attempt.", inline=False)
+            embed.add_field(name="Potential Spammers Detected", value=len(spammers), inline=False)
+            embed.add_field(name="Status", value="⚠️ Possible raid activity detected!", inline=False)
         else:
             embed.add_field(name="Status", value="✅ No major raid activity detected.", inline=False)
 
