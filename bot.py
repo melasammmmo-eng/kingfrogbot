@@ -277,7 +277,54 @@ async def weather(interaction: discord.Interaction, city: str):
     except Exception as e:
         await interaction.followup.send(f"Error getting weather: {str(e)}", ephemeral=True)
 
+
+
+
+
+
+@tree.command(name="raidscan", description="Scan recent messages for raid activity")
+async def readyscan(interaction: discord.Interaction):
+    if not await is_whitelisted(interaction):
+        return
+
+    await interaction.response.defer(ephemeral=True)
+
+    try:
+        messages = await interaction.channel.history(limit=100).flatten()
+        
+        everyone_pings = 0
+        rapid_messages = {}
+        suspicious_users = set()
+
+        for msg in messages:
+            if msg.mention_everyone:
+                everyone_pings += 1
+                suspicious_users.add(msg.author)
+
+            # Count messages per user
+            if msg.author.id not in rapid_messages:
+                rapid_messages[msg.author.id] = 0
+            rapid_messages[msg.author.id] += 1
+
+        # Find users who sent many messages quickly
+        spammers = [user for user, count in rapid_messages.items() if count >= 8]
+
+        embed = discord.Embed(title="Scan Report", color=discord.Color.orange())
+        embed.add_field(name="Total Messages Scanned", value="100", inline=False)
+        embed.add_field(name="@everyone Pings", value=everyone_pings, inline=False)
+        
+        if spammers:
+            embed.add_field(name="Potential Spammers", value=len(spammers), inline=False)
+            embed.add_field(name="Warning", value="High activity detected. Possible raid attempt.", inline=False)
+        else:
+            embed.add_field(name="Status", value="✅ No major raid activity detected.", inline=False)
+
+        await interaction.followup.send(embed=embed, ephemeral=True)
+
+    except Exception as e:
+        await interaction.followup.send(f"Error during scan: {str(e)}", ephemeral=True)
 # ================== MUSIC COMMANDS ==================
+
 
 @tree.command(name="play", description="Play a song")
 @app_commands.describe(query="Song name or URL")
